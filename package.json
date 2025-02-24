@@ -1,0 +1,48 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxt/ui": "^2.19.2",
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/mime-types": "^2.1.4",
+    "autoprefixer": "^10.4.16",
+    "nuxt": "^3.13.0",
+    "nuxt-icon": "^0.6.8",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "vue": "^3.4.3",
+    "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.6.0",
+    "@headlessui/vue": "^1.7.23",
+    "@heroicons/vue": "^2.1.5",
+    "@nuxtjs/color-mode": "^3.5.2",
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "@pinia/nuxt": "^0.5.5",
+    "@types/crypto-js": "^4.2.2",
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
+    "axios": "^1.7.7",
+    "crypto-js": "^4.2.0",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
+    "esbuild": "^0.24.0",
+    "formidable": "^3.5.2",
+    "fs": "^0.0.1-security",
+    "jwt-decode": "^4.0.0",
+    "mime-types": "^2.1.35",
+    "minio": "^8.0.2",
+    "pinia": "^2.2.6",
+    "vue-multiselect": "^3.1.0",
+    "vue3-toastify": "^0.2.5"
+  }
+}

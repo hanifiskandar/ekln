@@ -1,0 +1,119 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH != "staging" && $CI_COMMIT_BRANCH != "training" && $CI_COMMIT_BRANCH != "production" && $CI_PIPELINE_SOURCE != "merge_request_event"
+      when: never
+    - when: always
+    
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  IMAGE_NAME: "kkr.gov.my/internship/web"
+  IMAGE_PORT: 3001
+  CONTAINER_NAME: "kkr-internship-web"
+  VERSION: "0.1.0-beta"
+  STAGING_SERVER_URL: "http://10.9.206.193:"
+  TRAINING_SERVER_URL: "http://10.9.206.194:"
+  PRODUCTION_SERVER_URL: "http://10.9.206.195:"
+
+##### Staging Environment
+build_staging:
+  stage: build
+  tags:
+    - ep
+    - shell
+  script:
+    - docker build -t $IMAGE_NAME:$VERSION.$CI_PIPELINE_IID .
+  only:
+    - staging
+
+# test_staging:
+#   stage: test
+#   tags:
+#     - ep
+#     - shell
+#   script:
+#     - docker-compose run --rm api pytest  # Assuming pytest is used for testing
+#   only:
+#     - staging
+  # Note: You might need to define a `test` service in `docker-compose.yml` if tests require specific configurations
+
+deploy_staging:
+  stage: deploy
+  tags:
+    - ep
+    - shell
+  before_script:
+    - "export DC_CONTAINER_NAME=$CONTAINER_NAME &&
+        export DC_IMAGE_NAME=$IMAGE_NAME &&
+        export DC_IMAGE_TAG=$VERSION.$CI_PIPELINE_IID &&
+        export DC_APP_PORT=$IMAGE_PORT"
+    - "export NUXT_PUBLIC_SYSTEM_IDENTIFIER=$STAGING_SYSTEM_IDENTIFIER &&
+        export NUXT_PRIVATE_USER_AUTH_API_URL=$STAGING_USER_AUTH_API_URL &&
+        export NUXT_PRIVATE_USER_PROFILE_API_URL=$STAGING_USER_PROFILE_API_URL &&
+        export NUXT_PRIVATE_REF_HR_API_URL=$STAGING_REF_HR_API_URL &&
+        export NUXT_PRIVATE_REF_GENERIC_API_URL=$STAGING_REF_GENERIC_API_URL &&
+        export NUXT_PRIVATE_INTERNSHIP_API_URL=$STAGING_INTERNSHIP_API_URL"
+  script:
+    - echo "Deploying application"
+    - docker-compose -f docker-compose.yml down
+    - docker-compose -f docker-compose.yml up -d
+  environment:
+    name: staging
+    url: $STAGING_SERVER_URL.$COMPONENT_IMAGE_PORT
+  only:
+    - staging
+
+
+##### Training Environment
+build_training:
+  stage: build
+  tags:
+    - RHEL
+    - TRN_194
+    - shell
+  script:
+    - docker build -t $IMAGE_NAME:$VERSION.$CI_PIPELINE_IID .
+  only:
+    - training
+
+# test_training:
+#   stage: test
+#   tags:
+    # - RHEL
+    # - TRN_194
+    # - shell
+#   script:
+#     - docker-compose run --rm api pytest  # Assuming pytest is used for testing
+#   only:
+#     - training
+  # Note: You might need to define a `test` service in `docker-compose.yml` if tests require specific configurations
+
+deploy_training:
+  stage: deploy
+  tags:
+    - RHEL
+    - TRN_194
+    - shell
+  before_script:
+    - "export DC_CONTAINER_NAME=$CONTAINER_NAME &&
+        export DC_IMAGE_NAME=$IMAGE_NAME &&
+        export DC_IMAGE_TAG=$VERSION.$CI_PIPELINE_IID &&
+        export DC_APP_PORT=$IMAGE_PORT"
+    - "export NUXT_PUBLIC_SYSTEM_IDENTIFIER=$STAGING_SYSTEM_IDENTIFIER &&
+        export NUXT_PRIVATE_USER_AUTH_API_URL=$STAGING_USER_AUTH_API_URL &&
+        export NUXT_PRIVATE_USER_PROFILE_API_URL=$STAGING_USER_PROFILE_API_URL &&
+        export NUXT_PRIVATE_REF_HR_API_URL=$STAGING_REF_HR_API_URL &&
+        export NUXT_PRIVATE_REF_GENERIC_API_URL=$STAGING_REF_GENERIC_API_URL &&
+        export NUXT_PRIVATE_INTERNSHIP_API_URL=$STAGINGE_INTERNSHIP_API_URL"
+  script:
+    - echo "Deploying application"
+    - docker-compose -f docker-compose.yml down
+    - docker-compose -f docker-compose.yml up -d
+  environment:
+    name: training
+    url: $TRAINING_SERVER_URL.$COMPONENT_IMAGE_PORT
+  only:
+    - training
